@@ -46,7 +46,7 @@ export declare function buildAzureSsml(
   text: string,
   emotion?: string
 ): string
-export declare function detectEmotion(text: string): FoxyEmotion
+export declare function detectEmotion(text: string, fallback?: string): FoxyEmotion
 export declare function normalizeEmotion(value: string): FoxyEmotion | ''
 export declare function createToolClass(
   config: Record<string, unknown>,

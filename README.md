@@ -11,10 +11,10 @@
 - ChatLuna 原生工具 `send_voice`，模型按需调用。
 - `text` 是真正朗读的内容，可不同于本轮文字回复。
 - 工具参数新增 `emotion`：`neutral / happy / gentle / affectionate / shy / sad / angry / serious`。
-- 模型不填情绪时，插件可按关键词粗略判断（可关闭）。
+- 模型不填情绪时，插件可按关键词粗略判断（可关闭）；仍识别不到时使用 `defaultEmotion`，默认 **happy**。
+- `provider` 支持 `gpt-sovits | azure | auto`；Azure 失败可回退 GPT-SoVITS。
 - **GPT-SoVITS**：按情绪自动选择 `refsDir/<emotion>.wav` + `<emotion>.txt`，并轻调 `speed_factor`。
 - **Azure Speech**：按情绪映射到 `mstts:express-as style`，支持 `role`、`styledegree`、rate/pitch/volume。
-- 支持 `provider: gpt-sovits | azure | auto`；Azure 失败可回退 GPT-SoVITS。
 - 默认提示词要求：普通聊天不发语音；只有撒娇、装可爱、被要求，或文字无法表达语气时才发。
 
 ## 安装
@@ -37,7 +37,7 @@ npm install koishi-plugin-chatluna-foxy-tts
 | --- | --- |
 | `enabled` | 启用插件 |
 | `toolName` | 工具名，默认 `send_voice` |
-| `provider` | `gpt-sovits` / `azure` / `auto`；默认本地 |
+| `provider` | 下拉选择 `gpt-sovits` / `azure` / `auto`；默认本地 |
 | `apiUrl` | GPT-SoVITS 地址，默认 `http://127.0.0.1:9880` |
 | `refAudio` / `promptText` | 默认参考音频与逐字文本，3–8 秒干净人声 |
 | `refsDir` | 情绪参考目录；例如 `D:\...\foxy-dataset\emotion-refs`，文件名 `happy.wav`/`happy.txt` |
@@ -46,6 +46,7 @@ npm install koishi-plugin-chatluna-foxy-tts
 | `timeoutMs` | 合成超时，默认 60000 |
 | `emotionEnabled` | 启用情绪识别与注入 |
 | `autoDetectEmotion` | 模型没给 emotion 时用关键词粗略判断 |
+| `defaultEmotion` | 下拉选择；关键词也识别不到时使用，默认 `happy` |
 | `azureKey` | Azure Speech Key；留空读取 `AZURE_SPEECH_KEY`；不会写日志 |
 | `azureRegion` | 默认 `eastasia` |
 | `azureEndpoint` | 可选；留空按 region 拼 `https://<region>.tts.speech.microsoft.com/cognitiveservices/v1` |
@@ -109,7 +110,7 @@ Azure Speech 不需要额外的“API”对象；**Key + Region 就是全部凭�
 - 普通聊天默认只用文字，不要调用。
 - 当对方明确要求“发语音/用语音说/我想听你的声音”，或你想撒娇、装可爱、用语气表达文字表达不了的情绪时，才调用。
 - text 写你真正要说的话，可以与本轮文字不同。
-- emotion 先判断这句话的情绪：neutral/happy/gentle/affectionate/shy/sad/angry/serious；拿不准就 neutral。
+- emotion 先判断这句话的情绪：neutral/happy/gentle/affectionate/shy/sad/angry/serious；能判断就填，拿不准可以省略，插件会使用默认情绪（默认 happy）。
 - 一次回复最多调用一次；调用后文字回复可以很短，甚至只写一个空格。
 - 不要为了展示功能而频繁发语音。
 ```

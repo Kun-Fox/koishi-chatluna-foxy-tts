@@ -88,11 +88,38 @@ test('tool sends a real audio element to the chat session', async () => {
   }
 })
 
+test('tool falls back to the configured default emotion', async () => {
+  const original = global.fetch
+  global.fetch = async () => new Response(Buffer.from('RIFFdefaultwav'), {
+    status: 200,
+    headers: { 'content-type': 'audio/wav' },
+  })
+  try {
+    const { createToolClass } = require('../lib/index.js')
+    const Tool = createToolClass({
+      ...base,
+      emotionEnabled: true,
+      autoDetectEmotion: true,
+      defaultEmotion: 'happy',
+    }, { info() {}, warn() {} })
+    const tool = new Tool()
+    const result = await tool._call(
+      { text: '今天天气不错', reason: 'test' },
+      null,
+      { configurable: { session: { send: async () => {} } } }
+    )
+    assert.match(result, /情绪：happy/)
+  } finally {
+    global.fetch = original
+  }
+})
+
 test('detectEmotion and normalizeEmotion handle common aliases', () => {
   assert.equal(detectEmotion('哈哈哈哈，太好了！'), 'happy')
   assert.equal(detectEmotion('哼，才不是特意等你的'), 'shy')
   assert.equal(detectEmotion('我有点难过'), 'sad')
   assert.equal(detectEmotion('今天天气不错'), 'neutral')
+  assert.equal(detectEmotion('今天天气不错', 'happy'), 'happy')
   assert.equal(normalizeEmotion('cheerful'), 'happy')
   assert.equal(normalizeEmotion('calm'), 'neutral')
   assert.equal(normalizeEmotion('unknown'), '')

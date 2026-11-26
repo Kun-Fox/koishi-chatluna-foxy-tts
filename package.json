@@ -1,6 +1,6 @@
 {
   "name": "koishi-plugin-chatluna-foxy-tts",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "为 ChatLuna 提供独立的语音发送工具：支持 GPT-SoVITS / Azure、情绪识别与参考/style 注入。",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",

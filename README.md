@@ -50,7 +50,7 @@ npm install koishi-plugin-chatluna-foxy-tts
 | `azureKey` | Azure Speech Key；留空读取 `AZURE_SPEECH_KEY`；不会写日志 |
 | `azureRegion` | 默认 `eastasia` |
 | `azureEndpoint` | 可选；留空按 region 拼 `https://<region>.tts.speech.microsoft.com/cognitiveservices/v1` |
-| `azureVoice` | 默认 `zh-CN-XiaoyiNeural` |
+| `azureVoice` | 默认 `zh-CN-XiaomoNeural` |
 | `azureRole` | 可选，如 `Boy` |
 | `azureStyle` | 情绪关闭时的默认 style，默认 `general` |
 | `azureDegree` | style 强度，默认 1.1 |

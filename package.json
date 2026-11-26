@@ -1,7 +1,7 @@
 {
   "name": "koishi-plugin-chatluna-foxy-tts",
-  "version": "0.1.0",
-  "description": "为 ChatLuna 提供独立的语音发送工具：模型可自行决定是否发语音，语音内容不必等于文字。",
+  "version": "0.2.0",
+  "description": "为 ChatLuna 提供独立的语音发送工具：支持 GPT-SoVITS / Azure、情绪识别与参考/style 注入。",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "type": "commonjs",
@@ -21,6 +21,8 @@
     "chatluna",
     "tts",
     "gpt-sovits",
+    "azure",
+    "emotion",
     "voice"
   ],
   "engines": {
@@ -39,8 +41,8 @@
   },
   "koishi": {
     "description": {
-      "zh": "让 ChatLuna 模型按需调用 GPT-SoVITS 发送语音，文字与语音内容可不同。",
-      "en": "Let ChatLuna models send GPT-SoVITS voice messages on demand, independent of the text reply."
+      "zh": "让 ChatLuna 模型按需调用 GPT-SoVITS 或 Azure 发送语音，支持情绪识别与参考/style 注入。",
+      "en": "Let ChatLuna models send GPT-SoVITS or Azure voice messages on demand, with emotion-aware reference/style injection."
     },
     "service": {
       "required": [

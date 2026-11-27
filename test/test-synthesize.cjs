@@ -75,12 +75,13 @@ test('tool sends a real audio element to the chat session', async () => {
     const tool = new Tool()
     let sent
     const result = await tool._call(
-      { text: '用语音说这句', emotion: 'happy', reason: 'test' },
+      { text: '用语音说这句', emotion: 'happy', pitchDelta: 4, reason: 'test' },
       null,
       { configurable: { session: { send: async (element) => { sent = element } } } }
     )
     assert.match(result, /已发送语音/)
     assert.match(result, /情绪：happy/)
+    assert.match(result, /音高增量：\+4%/)
     assert.equal(sent.type, 'audio')
     assert.match(sent.attrs.src, /^data:audio\/wav;base64,/)
   } finally {
@@ -146,6 +147,21 @@ test('buildAzureSsml injects style, role, degree and prosody', () => {
   assert.match(ssml, /真的吗？&lt;开心&gt;/)
 })
 
+test('buildAzureSsml applies pitch delta on top of the configured base', () => {
+  const config = {
+    azureVoice: 'zh-CN-XiaomoNeural',
+    azureRole: '',
+    azureDegree: 1.1,
+    azureRate: 0,
+    azurePitch: 10,
+    azureVolume: 0,
+    emotionEnabled: true,
+  }
+  assert.match(buildAzureSsml(config, '夹一点', 'affectionate', 4), /pitch="\+14%"/)
+  assert.match(buildAzureSsml(config, '低一点', 'gentle', -6), /pitch="\+4%"/)
+  assert.match(buildAzureSsml(config, '不要越界', 'neutral', 50), /pitch="\+20%"/)
+})
+
 test('synthesizeAzure posts SSML and returns wav buffer', async () => {
   const original = global.fetch
   let request
@@ -172,13 +188,16 @@ test('synthesizeAzure posts SSML and returns wav buffer', async () => {
         emotionEnabled: true,
       },
       '你回来啦',
-      'happy'
+      'happy',
+      4
     )
     assert.equal(request.url, 'https://eastasia.tts.speech.microsoft.com/cognitiveservices/v1')
     assert.equal(request.init.headers['Ocp-Apim-Subscription-Key'], 'test-key')
     assert.match(request.init.body, /style="cheerful"/)
+    assert.match(request.init.body, /pitch="\+14%"/)
     assert.equal(result.provider, 'azure')
     assert.equal(result.emotion, 'happy')
+    assert.equal(result.pitchDelta, 4)
     assert.equal(result.buffer.toString(), 'RIFFazure')
   } finally {
     global.fetch = original

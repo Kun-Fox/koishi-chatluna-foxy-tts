@@ -16,6 +16,7 @@ export interface FoxyTtsResult {
   type: string
   provider: 'gpt-sovits' | 'azure'
   emotion: FoxyEmotion
+  pitchDelta?: number
   reference?: string
   fallbackFrom?: string
   warning?: string
@@ -29,7 +30,8 @@ export declare function apply(ctx: Context, config: Record<string, unknown>): vo
 export declare function synthesize(
   config: Record<string, unknown>,
   text: string,
-  emotion?: FoxyEmotion | string
+  emotion?: FoxyEmotion | string,
+  pitchDelta?: number
 ): Promise<FoxyTtsResult>
 export declare function synthesizeGptSoVits(
   config: Record<string, unknown>,
@@ -39,12 +41,14 @@ export declare function synthesizeGptSoVits(
 export declare function synthesizeAzure(
   config: Record<string, unknown>,
   text: string,
-  emotion?: string
+  emotion?: string,
+  pitchDelta?: number
 ): Promise<FoxyTtsResult>
 export declare function buildAzureSsml(
   config: Record<string, unknown>,
   text: string,
-  emotion?: string
+  emotion?: string,
+  pitchDelta?: number
 ): string
 export declare function detectEmotion(text: string, fallback?: string): FoxyEmotion
 export declare function normalizeEmotion(value: string): FoxyEmotion | ''

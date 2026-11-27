@@ -11,6 +11,7 @@
 - ChatLuna 原生工具 `send_voice`，模型按需调用。
 - `text` 是真正朗读的内容，可不同于本轮文字回复。
 - 工具参数新增 `emotion`：`neutral / happy / gentle / affectionate / shy / sad / angry / serious`。
+- 工具参数新增 `pitchDelta`：相对 `azurePitch` 基础值的 -10%～+10% 增量；只在对方要求“声音夹一点/高一点/低一点/沉一点”时由模型填写，基础音高不变。
 - 模型不填情绪时，插件可按关键词粗略判断（可关闭）；仍识别不到时使用 `defaultEmotion`，默认 **happy**。
 - `provider` 支持 `gpt-sovits | azure | auto`；Azure 失败可回退 GPT-SoVITS。
 - **GPT-SoVITS**：按情绪自动选择 `refsDir/<emotion>.wav` + `<emotion>.txt`，并轻调 `speed_factor`。
@@ -111,6 +112,7 @@ Azure Speech 不需要额外的“API”对象；**Key + Region 就是全部凭�
 - 当对方明确要求“发语音/用语音说/我想听你的声音”，或你想撒娇、装可爱、用语气表达文字表达不了的情绪时，才调用。
 - text 写你真正要说的话，可以与本轮文字不同。
 - emotion 先判断这句话的情绪：neutral/happy/gentle/affectionate/shy/sad/angry/serious；能判断就填，拿不准可以省略，插件会使用默认情绪（默认 happy）。
+- pitchDelta 只在对方明确要求声音更高/更“夹”/更低/更沉时填写，取值 -10～+10；夹一点/高一点用 +3～+5，低一点/沉一点用 -3～-5；对方没要求时不要填，基础音高不要改。
 - 一次回复最多调用一次；调用后文字回复可以很短，甚至只写一个空格。
 - 不要为了展示功能而频繁发语音。
 ```
